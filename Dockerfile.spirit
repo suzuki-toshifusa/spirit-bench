@@ -1,0 +1,28 @@
+FROM golang:1.24-bullseye
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    default-mysql-client \
+    git \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+RUN git clone https://github.com/block/spirit.git
+
+WORKDIR /workspace/spirit
+
+RUN go mod download
+
+RUN go build -o spirit ./cmd/spirit
+
+ENV PATH="/workspace/spirit:${PATH}"
+
+# 非rootユーザー作成
+RUN useradd -m appuser
+USER appuser
+
+WORKDIR /workspace
+
+CMD ["/bin/bash"]
