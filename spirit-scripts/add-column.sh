@@ -20,8 +20,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" \
-  --execute
+  --alter="ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 
 if [ $? -eq 0 ]; then
   echo "✓ created_atカラムの追加が完了しました"
@@ -38,8 +37,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD COLUMN status VARCHAR(20) DEFAULT 'active'" \
-  --execute
+  --alter="ADD COLUMN status VARCHAR(20) DEFAULT 'active'"
 
 if [ $? -eq 0 ]; then
   echo "✓ statusカラムの追加が完了しました"
@@ -56,8 +54,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" \
-  --execute
+  --alter="ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
 
 if [ $? -eq 0 ]; then
   echo "✓ updated_atカラムの追加が完了しました"

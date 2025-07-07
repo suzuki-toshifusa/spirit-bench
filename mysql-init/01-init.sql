@@ -1,6 +1,10 @@
 -- 初期化用SQL
 -- データベースとユーザーの作成は環境変数で行われるため、ここでは基本的な設定のみ
 
+-- testuserにroot同等の権限を付与
+GRANT ALL PRIVILEGES ON *.* TO 'testuser'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
 -- Spiritで使用するテスト用のテーブル例
 CREATE TABLE IF NOT EXISTS test_table (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

@@ -20,8 +20,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD INDEX idx_k_c (k, c(10))" \
-  --execute
+  --alter="ADD INDEX idx_k_c (k, c(10))"
 
 if [ $? -eq 0 ]; then
   echo "✓ 複合インデックス idx_k_c の追加が完了しました"
@@ -38,8 +37,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD INDEX idx_status (status)" \
-  --execute
+  --alter="ADD INDEX idx_status (status)"
 
 if [ $? -eq 0 ]; then
   echo "✓ ステータスインデックス idx_status の追加が完了しました"
@@ -55,8 +53,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="ADD INDEX idx_created_at (created_at)" \
-  --execute
+  --alter="ADD INDEX idx_created_at (created_at)"
 
 if [ $? -eq 0 ]; then
   echo "✓ 作成日インデックス idx_created_at の追加が完了しました"

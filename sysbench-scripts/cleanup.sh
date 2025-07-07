@@ -1,5 +1,5 @@
 #!/bin/bash
-# sysbench 実行スクリプト
+# sysbench クリーンアップスクリプト
 
 HOST=${MYSQL_HOST:-mysql}
 PORT=${MYSQL_PORT:-3306}
@@ -7,11 +7,9 @@ USER=${MYSQL_USER:-testuser}
 PASSWORD=${MYSQL_PASSWORD:-testpass}
 DATABASE=${MYSQL_DATABASE:-testdb}
 TABLES=${TABLES:-1}
-THREADS=${THREADS:-4}
-TIME=${TIME:-600} # 10 minutes
 
-echo "Running sysbench benchmark..."
-echo "Host: $HOST, Database: $DATABASE, Tables: $TABLES, Threads: $THREADS, Time: ${TIME}s"
+echo "Cleanup sysbench test data..."
+echo "Host: $HOST, Database: $DATABASE, Tables: $TABLES"
 
 sysbench oltp_read_write \
   --mysql-host=$HOST \
@@ -19,10 +17,7 @@ sysbench oltp_read_write \
   --mysql-user=$USER \
   --mysql-password=$PASSWORD \
   --mysql-db=$DATABASE \
-  --tables=$TABLES \
-  --threads=$THREADS \
-  --time=$TIME \
-  --report-interval=10 \
-  run
+  --tables=$TABLES
+  cleanup
 
-echo "Benchmark completed!"
+echo "Benchmark cleanup done!"

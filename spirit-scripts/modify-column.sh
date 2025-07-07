@@ -20,8 +20,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="MODIFY COLUMN c VARCHAR(150) NOT NULL DEFAULT ''" \
-  --execute
+  --alter="MODIFY COLUMN c VARCHAR(150) NOT NULL DEFAULT ''"
 
 if [ $? -eq 0 ]; then
   echo "✓ cカラムの変更が完了しました"
@@ -38,8 +37,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="MODIFY COLUMN pad CHAR(50) NOT NULL DEFAULT ''" \
-  --execute
+  --alter="MODIFY COLUMN pad CHAR(50) NOT NULL DEFAULT ''"
 
 if [ $? -eq 0 ]; then
   echo "✓ padカラムの変更が完了しました"
@@ -56,8 +54,7 @@ spirit \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="MODIFY COLUMN k INTEGER NOT NULL DEFAULT 0 COMMENT 'Secondary index key'" \
-  --execute
+  --alter="MODIFY COLUMN k INTEGER NOT NULL DEFAULT 0 COMMENT 'Secondary index key'"
 
 if [ $? -eq 0 ]; then
   echo "✓ kカラムの変更が完了しました"
