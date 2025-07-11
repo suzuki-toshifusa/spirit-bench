@@ -29,9 +29,16 @@ TABLE=test_table
 
 ## 使用方法
 
-### 1. 環境の起動
+### 1. リポジトリのClone
 
 ```bash
+git clone https://github.com/block/spirit.git ./spirit-src
+```
+
+### 2. 環境の起動
+
+```bash
+
 # 全サービスをバックグラウンドで起動
 docker-compose up -d
 
@@ -39,7 +46,7 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-### 2. MySQLサーバーの確認
+### 3. MySQLサーバーの確認
 
 ```bash
 # MySQLに直接接続（環境変数を使用）
@@ -49,7 +56,7 @@ source .env && docker exec -it spirit-mysql mysql -u $MYSQL_USER -p$MYSQL_PASSWO
 mysql -h localhost -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
 ```
 
-### 3. sysbenchでの負荷テスト
+### 4. sysbenchでの負荷テスト
 
 ```bash
 # sysbenchコンテナに接続
@@ -69,7 +76,7 @@ cd /scripts
 TABLES=5 TABLE_SIZE=50000 THREADS=8 TIME=120 ./run.sh
 ```
 
-### 4. Spiritでのスキーマ変更
+### 5. Spiritでのスキーマ変更
 
 ```bash
 # Spiritコンテナに接続
@@ -108,13 +115,16 @@ spirit --host=$MYSQL_HOST --username=$MYSQL_USER --password=$MYSQL_PASSWORD --da
 ### ディレクトリ構成
 ```
 .
-├── .env                        # 環境変数設定ファイル
 ├── docker-compose.yml          # Docker Composeメイン設定
-├── Dockerfile.sysbench         # sysbench用Dockerfile
 ├── Dockerfile.spirit           # Spirit用Dockerfile
-├── mysql-init/                 # MySQL初期化SQLファイル
+├── Dockerfile.sysbench         # sysbench用Dockerfile
+├── .env                        # 各サービスで共通に使われる環境変数定義
+├── spirit-src/                 # ホスト上で clone 済みの Spirit
+│   └── ...（spirit のコード）    # Spirit の Go ソースコードや go.mod など
+├── spirit-scripts/             # Spiritサンプルスクリプト
 ├── sysbench-scripts/           # sysbenchスクリプト
-└── spirit-scripts/             # Spiritサンプルスクリプト
+├── mysql-init/                 # MySQL初期化SQLファイル
+└── .dockerignore               # Docker ビルド時に無視するファイル／ディレクトリ一覧
 ```
 
 ## 注意事項

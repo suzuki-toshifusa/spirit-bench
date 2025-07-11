@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /workspace
 
-RUN git clone https://github.com/block/spirit.git
+COPY ./spirit-src /workspace/spirit
 
 WORKDIR /workspace/spirit
 

@@ -8,7 +8,7 @@ PASSWORD=${MYSQL_PASSWORD:-testpass}
 DATABASE=${MYSQL_DATABASE:-testdb}
 TABLES=${TABLES:-1}
 THREADS=${THREADS:-4}
-TIME=${TIME:-600} # 10 minutes
+TIME=${TIME:-1800} # 0.5 hour
 
 echo "Running sysbench benchmark..."
 echo "Host: $HOST, Database: $DATABASE, Tables: $TABLES, Threads: $THREADS, Time: ${TIME}s"

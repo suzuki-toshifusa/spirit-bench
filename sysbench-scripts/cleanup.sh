@@ -17,7 +17,7 @@ sysbench oltp_read_write \
   --mysql-user=$USER \
   --mysql-password=$PASSWORD \
   --mysql-db=$DATABASE \
-  --tables=$TABLES
+  --tables=$TABLES \
   cleanup
 
 echo "Benchmark cleanup done!"
