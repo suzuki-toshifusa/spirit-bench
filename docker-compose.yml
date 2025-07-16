@@ -53,6 +53,22 @@ services:
     tty: true
     command: /bin/bash
 
+  tidb-tools:
+    image: pingcap/tidb-tools:latest
+    container_name: spirit-tidb-tools
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - spirit-network
+    volumes:
+      - ./tidb-scripts:/scripts
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
 volumes:
   mysql_data:
 

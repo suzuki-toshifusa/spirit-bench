@@ -1,2 +1,3 @@
 *.log
 spirit-src/
+tidb-scripts/output/

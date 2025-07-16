@@ -7,6 +7,7 @@ Online Schema Change Tool「Spirit」の検証環境をDockerで構築するた�
 - **MySQL 8.4**: メインのデータベースサーバー
 - **sysbench**: データベースベンチマークツール
 - **Spirit**: Online Schema Change Tool
+- **TiDB Tools**: TiDBツールキット（データ比較・DDLチェック・データ生成）
 
 ## 環境変数設定
 
@@ -98,6 +99,28 @@ spirit --host=$MYSQL_HOST --username=$MYSQL_USER --password=$MYSQL_PASSWORD --da
        --table=$TABLE --alter="ADD COLUMN new_col VARCHAR(100)"
 ```
 
+### 6. TiDB Toolsでのデータ検証
+
+```bash
+# TiDB Toolsコンテナに接続
+docker exec -it spirit-tidb-tools /bin/bash
+
+# MySQLに接続テスト
+mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
+
+# データベース比較（sync_diff_inspector）
+cd /scripts
+sync_diff_inspector --config=config.toml
+
+# DDL実行可能性チェック（ddl_checker）
+ddl_checker --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --password=$MYSQL_PASSWORD \
+           --database=$MYSQL_DATABASE --sql="ALTER TABLE test_table ADD COLUMN new_col INT"
+
+# テストデータ生成（importer）
+importer --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --password=$MYSQL_PASSWORD \
+         --database=$MYSQL_DATABASE --table=$TABLE --rows=10000
+```
+
 ## 設定ファイル
 
 ### MySQL接続情報
@@ -123,6 +146,7 @@ spirit --host=$MYSQL_HOST --username=$MYSQL_USER --password=$MYSQL_PASSWORD --da
 │   └── ...（spirit のコード）    # Spirit の Go ソースコードや go.mod など
 ├── spirit-scripts/             # Spiritサンプルスクリプト
 ├── sysbench-scripts/           # sysbenchスクリプト
+├── tidb-scripts/               # TiDB Toolsスクリプト
 ├── mysql-init/                 # MySQL初期化SQLファイル
 └── .dockerignore               # Docker ビルド時に無視するファイル／ディレクトリ一覧
 ```
@@ -201,3 +225,39 @@ docker exec -it spirit-sysbench env | grep MYSQL
   TABLE=sbtest2 docker-compose exec spirit /scripts/add-column.sh
 
   各スクリプトは実行権限付きで、エラーハンドリングと進捗表示機能が含まれています。
+
+## データ整合性チェック
+
+SpiritによるOnline Schema Change実行後、元テーブル（sbtest1）と新テーブル（sbtest1_new）のデータ整合性をチェックできます。
+
+### 使用方法
+
+```bash
+# TiDB Toolsコンテナに接続
+docker exec -it spirit-tidb-tools /bin/bash
+
+# データ整合性チェック実行
+sync_diff_inspector --config=/scripts/config.toml
+```
+
+### 設定ファイル
+
+`tidb-scripts/config.toml`にsbtest1とsbtest1_newテーブルの比較設定が含まれています：
+
+- チェック対象: sbtest1 → sbtest1_new
+- チャンクサイズ: 1000行
+- 結果出力: `/scripts/output`ディレクトリ
+- 差分があった場合の修正SQL出力: 有効
+
+### 実行例
+
+```bash
+# Spiritでインデックス追加を実行
+docker exec -it spirit-tool /scripts/add-index.sh
+
+# データ整合性チェックを実行
+docker exec -it spirit-tidb-tools sync_diff_inspector --config=/scripts/config.toml
+
+# 差分ファイルを確認（差分があった場合）
+docker exec -it spirit-tidb-tools ls -la /scripts/output/
+```

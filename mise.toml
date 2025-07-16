@@ -1,0 +1,19 @@
+[tasks.sysbench]
+alias = "sysbench"
+description = "docker exec で sysbench コンテナに入る"
+run = "docker exec -it spirit-sysbench /bin/bash"
+
+[tasks.spirit]
+alias = "spirit"
+description = "docker exec で spirit コンテナに入る"
+run = "docker exec -it spirit-tool /bin/bash"
+
+[tasks.tidbtools]
+alias = "tidbtools"
+description = "docker exec で tidb-tools コンテナに入る"
+run = "docker exec -it spirit-tidb-tools /bin/bash"
+
+[tasks.mysql]
+alias = "mysql"
+description = "docker exec で mysql コンテナに入る"
+run = "source .env && docker exec -it spirit-mysql mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE"

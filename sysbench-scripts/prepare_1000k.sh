@@ -7,7 +7,7 @@ USER=${MYSQL_USER:-testuser}
 PASSWORD=${MYSQL_PASSWORD:-testpass}
 DATABASE=${MYSQL_DATABASE:-testdb}
 TABLES=${TABLES:-1}
-TABLE_SIZE=${TABLE_SIZE:-10000000}
+TABLE_SIZE=${TABLE_SIZE:-1000000}
 
 echo "Preparing sysbench test data..."
 echo "Host: $HOST, Database: $DATABASE, Tables: $TABLES, Size: $TABLE_SIZE"

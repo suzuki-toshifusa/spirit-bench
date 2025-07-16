@@ -1,0 +1,97 @@
+# sync-diff-inspector configuration
+# sbtest1とsbtest1_newテーブルのデータ整合性チェック用設定
+
+######################### Global config #########################
+# データをチェックするために作成されたゴルーチンの数。s
+# ync-diff-inspectorとアップストリーム/ダウンストリームのデータベース間の接続数は、この値よりもわずかに多くなります。
+check-thread-count = 4
+
+# 有効にすると、不整合テーブルを修正するためにSQLステートメントがエクスポートされる。
+export-fix-sql = true
+
+# テーブル構造ではなく、データのみを比較する。この設定項目は実験的な機能です。本番環境で使用することはお勧めしません。
+check-data-only = false
+
+# データの代わりにテーブル構造だけを比較する。
+check-struct-only = false
+
+# 有効にすると、sync-diff-inspectorはアップストリームまたはダウンストリームに存在しないテーブルのチェックをスキップする。
+skip-non-existing-table = false
+
+######################### Datasource config #########################
+[data-sources]
+[data-sources.mysql1]  # mysql1 はデータベースインスタンスの唯一のカスタム ID である。これは以下の `task.source-instances/task.target-instance` 設定に使用される。
+    host = "mysql"
+    port = 3306
+    user = "testuser"
+    password = "testpass"   # Tアップストリームデータベースに接続するためのパスワード。プレーンテキストまたはBase64エンコードで指定します。
+
+    # (オプション) マッピングルールを使用して、複数のアップストリームシャードテーブルにマッチさせます。rule1とrule2は以下のRoutesセクションで設定します。
+    route-rules = ["rule1"]
+
+[data-sources.mysql2]
+    host = "mysql"
+    port = 3306
+    user = "testuser"
+    password = "testpass"
+
+########################### Routes ##############################
+# スキーマ名やテーブル名が異なる多数のテーブルのデータを比較したり、複数の上流シャードテーブルと下流テーブルファミリーのデータを確認したりするには、
+# table-ruleを使用してマッピング関係を設定します。
+# マッピング・ルールはスキーマまたはテーブルに対してのみ設定できます。また、スキーマとテーブルの両方にマッピングルールを設定することもできます。
+[routes]
+[routes.rule1] # rule1はコンフィギュレーションの唯一のカスタムIDです。これは上記の`data-sources.route-rules`の設定に使用されます。
+    schema-pattern = "testdb"      # データ・ソースのスキーマ名にマッチします。ワイルドカード "*" および "?" をサポートしています。
+    table-pattern = "sbtest1"      # データ・ソースのテーブル名にマッチします。ワイルドカード "*" および "?" をサポートしています。
+    target-schema = "testdb"       # ターゲットデータベースのスキーマ名
+    target-table = "sbtest1_new"   # ターゲット・テーブルの名前
+
+######################### task config #########################
+# 比較対象となるデータベースのテーブルを設定します。
+[task]
+    # output-dir には以下の情報が保存される：
+    # 1 sql： エラー検出後に生成されるテーブル修正用のSQLファイル. 1つのチャンクが1つのSQLファイルに対応します.
+    # 2 log: sync-diff.log
+    # 3 summary: summary.txt
+    # 4 チェックポイント: dir
+    output-dir = "/scripts/output"
+
+    # 上流のデータベース。値はデータソースによって宣言された一意のID。
+    source-instances = ["mysql1"]
+
+    # ダウンストリームデータベース。値はデータソースによって宣言された一意のIDです。
+    target-instance = "mysql2"
+
+    # 比較するダウンストリーム・データベースのテーブル。各テーブルにはスキーマ名とテーブル名を '.' で区切って指定する必要がある。
+    # 任意の文字にマッチする場合は"? "を、任意の長さの文字にマッチする場合は "*"を使います。
+    # 詳細なマッチルールについては、golang regexp pkg: https://github.com/google/re2/wiki/Syntax を参照してください。
+    target-check-tables = ["testdb.sbtest1_new"]
+
+    # (オプション) いくつかのテーブルの追加コンフィギュレーション。Config1は以下のテーブル・コンフィギュレーションの例で定義されている。
+    # target-configs = ["config1"]
+
+######################### Table config #########################
+# 特定のテーブルに対する特別な設定。設定するテーブルは `task.target-check-tables` に記述しなければならない。
+#[table-configs.config1] # config1は、このコンフィギュレーションの唯一のカスタムIDである。これは上記の `task.target-configs` 設定に使用される。
+
+# 正規表現を使って複数のテーブルにマッチさせることはできるが、1つのテーブルを同時に複数の特殊設定にマッチさせることはできない。
+#target-tables = ["schema*.test*", "test2.t2"]
+
+# (オプション) チェックするデータの範囲を指定します。
+# SQLのWHERE句の構文に従う必要がある。
+#range = "age > 10 AND age < 20"
+
+# (オプション) データをチャンクに分割するために使用するカラムを指定します。設定しない場合は
+# sync-diff-inspectorは適切なカラム（主キー、一意キー、またはインデックスを持つフィールド）を選択します。
+#index-fields = ["col1","col2"]
+
+# (オプション) sync-diff-inspectorが現在サポートしていない型(json、bit、blobなど)など、一部のカラムのチェックを無視します。
+# 浮動小数点データ型はTiDBとMySQLで動作が異なります。
+# これらのカラムのチェックをスキップするには `ignore-columns` を使用する。
+#ignore-columns = ["",""]
+
+# (オプション) テーブルを分割するチャンクのサイズを指定します。指定しない場合、この設定は削除されるか0に設定される。
+#chunk-size = 0
+
+# (オプション) テーブルの「照合順序」を指定します。指定しない場合、この設定は削除されるか空文字列として設定されます。
+#collation = ""
