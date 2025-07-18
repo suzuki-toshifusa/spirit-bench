@@ -44,7 +44,7 @@ skip-non-existing-table = false
     schema-pattern = "testdb"      # データ・ソースのスキーマ名にマッチします。ワイルドカード "*" および "?" をサポートしています。
     table-pattern = "sbtest1"      # データ・ソースのテーブル名にマッチします。ワイルドカード "*" および "?" をサポートしています。
     target-schema = "testdb"       # ターゲットデータベースのスキーマ名
-    target-table = "sbtest1_new"   # ターゲット・テーブルの名前
+    target-table = "_sbtest1_new"   # ターゲット・テーブルの名前
 
 ######################### task config #########################
 # 比較対象となるデータベースのテーブルを設定します。
@@ -54,7 +54,7 @@ skip-non-existing-table = false
     # 2 log: sync-diff.log
     # 3 summary: summary.txt
     # 4 チェックポイント: dir
-    output-dir = "/scripts/output"
+    output-dir = "/scripts/output2"
 
     # 上流のデータベース。値はデータソースによって宣言された一意のID。
     source-instances = ["mysql1"]
@@ -65,7 +65,7 @@ skip-non-existing-table = false
     # 比較するダウンストリーム・データベースのテーブル。各テーブルにはスキーマ名とテーブル名を '.' で区切って指定する必要がある。
     # 任意の文字にマッチする場合は"? "を、任意の長さの文字にマッチする場合は "*"を使います。
     # 詳細なマッチルールについては、golang regexp pkg: https://github.com/google/re2/wiki/Syntax を参照してください。
-    target-check-tables = ["testdb.sbtest1_new"]
+    target-check-tables = ["testdb._sbtest1_new"]
 
     # (オプション) いくつかのテーブルの追加コンフィギュレーション。Config1は以下のテーブル・コンフィギュレーションの例で定義されている。
     # target-configs = ["config1"]

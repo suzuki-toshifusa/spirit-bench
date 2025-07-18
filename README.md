@@ -109,16 +109,7 @@ docker exec -it spirit-tidb-tools /bin/bash
 mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
 
 # データベース比較（sync_diff_inspector）
-cd /scripts
-sync_diff_inspector --config=config.toml
-
-# DDL実行可能性チェック（ddl_checker）
-ddl_checker --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --password=$MYSQL_PASSWORD \
-           --database=$MYSQL_DATABASE --sql="ALTER TABLE test_table ADD COLUMN new_col INT"
-
-# テストデータ生成（importer）
-importer --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --password=$MYSQL_PASSWORD \
-         --database=$MYSQL_DATABASE --table=$TABLE --rows=10000
+./sync_diff_inspector --config=/scripts/config.toml
 ```
 
 ## 設定ファイル

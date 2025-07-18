@@ -29,39 +29,3 @@ else
   echo "✗ 複合インデックス idx_k_c の追加に失敗しました"
   exit 1
 fi
-
-# statusカラムのインデックス追加（カラムが存在する場合）
-echo "2/3: ステータスインデックス idx_status を追加中..."
-spirit \
-  --host=$HOST:$PORT \
-  --username=$USER \
-  --password=$PASSWORD \
-  --database=$DATABASE \
-  --table=$TABLE \
-  --alter="ADD INDEX idx_status (status)" \
-  --defer-cutover
-
-if [ $? -eq 0 ]; then
-  echo "✓ ステータスインデックス idx_status の追加が完了しました"
-else
-  echo "⚠ ステータスインデックス idx_status の追加をスキップ（statusカラムが存在しない可能性）"
-fi
-
-# created_atカラムのインデックス追加（カラムが存在する場合）
-echo "3/3: 作成日インデックス idx_created_at を追加中..."
-spirit \
-  --host=$HOST:$PORT \
-  --username=$USER \
-  --password=$PASSWORD \
-  --database=$DATABASE \
-  --table=$TABLE \
-  --alter="ADD INDEX idx_created_at (created_at)" \
-  --defer-cutover
-
-if [ $? -eq 0 ]; then
-  echo "✓ 作成日インデックス idx_created_at の追加が完了しました"
-  echo "🎉 すべてのインデックス追加が完了しました！"
-else
-  echo "⚠ 作成日インデックス idx_created_at の追加をスキップ（created_atカラムが存在しない可能性）"
-  echo "📝 基本インデックスの追加は完了しました"
-fi
