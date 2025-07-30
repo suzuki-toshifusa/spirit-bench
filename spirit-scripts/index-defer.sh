@@ -10,10 +10,10 @@ TABLE=${TABLE:-sbtest1}
 
 echo "Spirit: インデックス追加を実行（defer-cutover使用）"
 echo "Host: $HOST:$PORT, Database: $DATABASE, Table: $TABLE" 
-echo "変更内容: 複合インデックス、ステータスインデックス、作成日インデックス"
+echo "変更内容: 複合インデックスを defer-cutover で追加"
 
 # 複合インデックス (k, c) の追加
-echo "1/3: 複合インデックス idx_k_c を追加中..."
+echo "1/1: 複合インデックス idx_k_c を追加中..."
 spirit \
   --host=$HOST:$PORT \
   --username=$USER \
