@@ -13,25 +13,38 @@ echo "Host: $HOST:$PORT, Database: $DATABASE, Table: $TABLE"
 echo "変更内容: テーブル最適化、テーブル名の変更"
 
 # テーブル最適化
-echo "1/1: テーブル最適化中..."
+echo "1/3: テーブル最適化中..."
+spirit \
+  --host=$HOST:$PORT \
+  --username=$USER \
+  --password=$PASSWORD \
+  --database=$DATABASE \
+  --statement="OPTIMIZE TABLE $TABLE"
+
+if [ $? -eq 0 ]; then
+  echo "✓ テーブル最適化（OPTIMIZE TABLE）が完了しました"
+else
+  echo "✗ テーブル最適化（OPTIMIZE TABLE）に失敗しました"
+fi
+
+# テーブル最適化
+echo "2/3: テーブル最適化中..."
 spirit \
   --host=$HOST:$PORT \
   --username=$USER \
   --password=$PASSWORD \
   --database=$DATABASE \
   --table=$TABLE \
-  --alter="FORCE" \
-  # --statement="OPTIMIZE TABLE $TABLE"
+  --alter="FORCE"
 
 if [ $? -eq 0 ]; then
-  echo "✓ テーブル最適化が完了しました"
+  echo "✓ テーブル最適化（FORCE）が完了しました"
 else
-  echo "✗ テーブル最適化に失敗しました"
-  exit 1
+  echo "✗ テーブル最適化（FORCE）に失敗しました"
 fi
 
-#  主キーの削除
-echo "2/2: テーブル名の変更"
+#  テーブル名の変更
+echo "2/3: テーブル名の変更"
 spirit \
   --host=$HOST:$PORT \
   --username=$USER \
